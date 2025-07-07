@@ -2,7 +2,8 @@ from django.contrib.auth.models import User
 from django.contrib.auth.signals import user_logged_in, user_logged_out
 
 from elevate.signals import grant, revoke
-from elevate.utils import has_elevated_privileges, grant_elevated_privileges
+from elevate.utils import grant_elevated_privileges, has_elevated_privileges
+
 from .base import BaseTestCase
 
 

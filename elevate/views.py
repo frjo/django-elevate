@@ -6,22 +6,27 @@ elevate.views
 :copyright: (c) 2014-2016 by Matt Robenolt.
 :license: BSD, see LICENSE for more details.
 """
+
 from urllib.parse import urlparse, urlunparse
 
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, QueryDict
 from django.shortcuts import resolve_url
 from django.template.response import TemplateResponse
-from django.views.decorators.debug import sensitive_post_parameters
-from django.views.decorators.cache import never_cache
-from django.views.decorators.csrf import csrf_protect
-from django.views.generic import View
 from django.utils.decorators import method_decorator
 from django.utils.module_loading import import_string
+from django.views.decorators.cache import never_cache
+from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.debug import sensitive_post_parameters
+from django.views.generic import View
 
-from elevate.settings import (REDIRECT_FIELD_NAME, REDIRECT_URL,
-                              REDIRECT_TO_FIELD_NAME, URL)
 from elevate.forms import ElevateForm
+from elevate.settings import (
+    REDIRECT_FIELD_NAME,
+    REDIRECT_TO_FIELD_NAME,
+    REDIRECT_URL,
+    URL,
+)
 from elevate.utils import grant_elevated_privileges
 
 try:
@@ -37,21 +42,24 @@ class ElevateView(View):
     prompt the user for their password again, and if successful, redirect
     them back to ``next``.
     """
+
     form_class = ElevateForm
-    template_name = 'elevate/elevate.html'
+    template_name = "elevate/elevate.html"
     extra_context = None
 
     def handle_elevate(self, request, redirect_to, context):
-        return request.method == 'POST' and context['form'].is_valid()
+        return request.method == "POST" and context["form"].is_valid()
 
     def grant_elevated_privileges(self, request, redirect_to):
         grant_elevated_privileges(request)
         # Restore the redirect destination from the GET request
-        redirect_to = request.session.pop(REDIRECT_TO_FIELD_NAME,
-                                          redirect_to)
+        redirect_to = request.session.pop(REDIRECT_TO_FIELD_NAME, redirect_to)
         # Double check we're not redirecting to other sites
-        if not url_has_allowed_host_and_scheme(redirect_to, allowed_hosts=[request.get_host()],
-                                               require_https=request.is_secure()):
+        if not url_has_allowed_host_and_scheme(
+            redirect_to,
+            allowed_hosts=[request.get_host()],
+            require_https=request.is_secure(),
+        ):
             redirect_to = resolve_url(REDIRECT_URL)
         return HttpResponseRedirect(redirect_to)
 
@@ -63,19 +71,22 @@ class ElevateView(View):
         redirect_to = request.GET.get(REDIRECT_FIELD_NAME, REDIRECT_URL)
 
         # Make sure we're not redirecting to other sites
-        if not url_has_allowed_host_and_scheme(redirect_to, allowed_hosts=[request.get_host()],
-                                               require_https=request.is_secure()):
+        if not url_has_allowed_host_and_scheme(
+            redirect_to,
+            allowed_hosts=[request.get_host()],
+            require_https=request.is_secure(),
+        ):
             redirect_to = resolve_url(REDIRECT_URL)
 
         if request.is_elevated():
             return HttpResponseRedirect(redirect_to)
 
-        if request.method == 'GET':
+        if request.method == "GET":
             request.session[REDIRECT_TO_FIELD_NAME] = redirect_to
 
         context = {
-            'form': self.form_class(request, request.user, request.POST or None),
-            'request': request,
+            "form": self.form_class(request, request.user, request.POST or None),
+            "request": request,
             REDIRECT_FIELD_NAME: redirect_to,
         }
         if self.handle_elevate(request, redirect_to, context):
@@ -107,6 +118,6 @@ def redirect_to_elevate(next_url, elevate_url=None):
 
     querystring = QueryDict(elevate_url_parts[4], mutable=True)
     querystring[REDIRECT_FIELD_NAME] = next_url
-    elevate_url_parts[4] = querystring.urlencode(safe='/')
+    elevate_url_parts[4] = querystring.urlencode(safe="/")
 
     return HttpResponseRedirect(urlunparse(elevate_url_parts))

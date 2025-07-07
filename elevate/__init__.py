@@ -6,11 +6,12 @@ elevate
 :copyright: (c) 2014-2016 by Matt Robenolt.
 :license: BSD, see LICENSE for more details.
 """
+
 from importlib.metadata import version
 
 try:
-    VERSION = version('elevate')
+    VERSION = version("elevate")
 except Exception:  # pragma: no cover
-    VERSION = 'unknown'
+    VERSION = "unknown"
 
-default_app_config = 'elevate.apps.ElevateConfig'
+default_app_config = "elevate.apps.ElevateConfig"

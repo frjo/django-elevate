@@ -1,6 +1,7 @@
 from django.http import HttpResponse
 
 from elevate.decorators import elevate_required
+
 from .base import BaseTestCase
 
 
@@ -19,4 +20,4 @@ class ElevateRequiredTestCase(BaseTestCase):
         self.request.is_elevated = lambda: False
         response = foo(self.request)
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response['Location'], '/elevate/?next=/foo')
+        self.assertEqual(response["Location"], "/elevate/?next=/foo")

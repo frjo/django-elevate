@@ -1,38 +1,40 @@
-from invoke import run as _run, task
 from functools import partial
+
+from invoke import run as _run
+from invoke import task
 
 # Always echo out the commands
 run = partial(_run, echo=True, pty=True)
 
 
 @task
-def lint(verbose=False):
-    "Run flake8 linter"
-    run('tox -e flake8{0}'.format(' -- -v' if verbose else ''))
+def lint(c, verbose=False):
+    "Run ruff linter"
+    c.run("uv run ruff check --fix{0}".format(" --verbose" if verbose else ""))
 
 
 @task(lint)
-def test(verbose=False):
+def test(c, verbose=False):
     "Run tests using tox"
-    run('tox --skip-missing-interpreters{0}'.format(' -- -v' if verbose else ''))
+    c.run("tox --skip-missing-interpreters{0}".format(" -- -v" if verbose else ""))
 
 
 @task
-def clean():
+def clean(c):
     "Clean working directory"
-    run('rm -rf *.egg-info *.egg')
-    run('rm -rf dist build')
+    c.run("rm -rf *.egg-info *.egg")
+    c.run("rm -rf dist build")
 
 
 @task(clean)
-def release():
+def release(c):
     "Cut a new release"
-    version = run('python setup.py --version').stdout.strip()
-    assert version, 'No version found in setup.py?'
+    version = c.run("python setup.py --version").stdout.strip()
+    assert version, "No version found in setup.py?"
 
-    print('### Releasing new version: {0}'.format(version))
-    run('git tag {0}'.format(version))
-    run('git push --tags')
+    print("### Releasing new version: {0}".format(version))
+    c.run("git tag {0}".format(version))
+    c.run("git push --tags")
 
-    run('python setup.py sdist bdist_wheel')
-    run('twine upload -s dist/*')
+    c.run("python setup.py sdist bdist_wheel")
+    c.run("twine upload -s dist/*")

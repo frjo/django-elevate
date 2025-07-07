@@ -1,6 +1,6 @@
 from django.core.signing import BadSignature
 
-from elevate.settings import COOKIE_NAME, COOKIE_AGE
+from elevate.settings import COOKIE_AGE, COOKIE_NAME
 from elevate.utils import (
     grant_elevated_privileges,
     has_elevated_privileges,
@@ -14,9 +14,7 @@ class GrantElevatedPrivilegesTestCase(BaseTestCase):
     def assertRequestHasToken(self, request, max_age):
         token = request.session[COOKIE_NAME]
 
-        self.assertRegex(
-            token, r'^\w{12}$'
-        )
+        self.assertRegex(token, r"^\w{12}$")
         self.assertTrue(request._elevate)
         self.assertEqual(request._elevate_token, token)
         self.assertEqual(request._elevate_max_age, max_age)
@@ -38,7 +36,7 @@ class GrantElevatedPrivilegesTestCase(BaseTestCase):
         self.assertRequestHasToken(self.request, 60)
 
     def test_without_user(self):
-        delattr(self.request, 'user')
+        delattr(self.request, "user")
         token = grant_elevated_privileges(self.request)
         self.assertIsNone(token)
 
@@ -77,26 +75,29 @@ class HasElevatedPrivilegesTestCase(BaseTestCase):
     def test_cookie_and_token_match(self):
         self.login()
 
-        def get_signed_cookie(key, salt='', max_age=None):
-            return 'abc123'
-        self.request.session[COOKIE_NAME] = 'abc123'
+        def get_signed_cookie(key, salt="", max_age=None):
+            return "abc123"
+
+        self.request.session[COOKIE_NAME] = "abc123"
         self.request.get_signed_cookie = get_signed_cookie
         self.assertTrue(has_elevated_privileges(self.request))
 
     def test_cookie_and_token_mismatch(self):
         self.login()
 
-        def get_signed_cookie(key, salt='', max_age=None):
-            return 'nope'
-        self.request.session[COOKIE_NAME] = 'abc123'
+        def get_signed_cookie(key, salt="", max_age=None):
+            return "nope"
+
+        self.request.session[COOKIE_NAME] = "abc123"
         self.assertFalse(has_elevated_privileges(self.request))
 
     def test_cookie_bad_signature(self):
         self.login()
 
-        def get_signed_cookie(key, salt='', max_age=None):
+        def get_signed_cookie(key, salt="", max_age=None):
             raise BadSignature
-        self.request.session[COOKIE_NAME] = 'abc123'
+
+        self.request.session[COOKIE_NAME] = "abc123"
         self.assertFalse(has_elevated_privileges(self.request))
 
     def test_missing_keys(self):

@@ -1,11 +1,12 @@
 from django.http import HttpResponse
 
-from elevate.settings import COOKIE_NAME
 from elevate.middleware import ElevateMiddleware
+from elevate.settings import COOKIE_NAME
 from elevate.utils import (
     grant_elevated_privileges,
     revoke_elevated_privileges,
 )
+
 from .base import BaseTestCase
 
 
@@ -13,7 +14,7 @@ class ElevateMiddlewareTestCase(BaseTestCase):
     middleware = ElevateMiddleware(lambda x: x)
 
     def assertSignedCookieEqual(self, v1, v2, reason=None):
-        value, _, _ = v1.split(':')
+        value, _, _ = v1.split(":")
         return self.assertEqual(value, v2, reason)
 
     def test_process_request_raises_without_session(self):
@@ -40,13 +41,13 @@ class ElevateMiddlewareTestCase(BaseTestCase):
         _, elevate = morsels[0]
         self.assertEqual(elevate.key, COOKIE_NAME)
         self.assertSignedCookieEqual(elevate.value, self.request._elevate_token)
-        self.assertEqual(elevate['max-age'], self.request._elevate_max_age)
-        self.assertTrue(elevate['httponly'])
+        self.assertEqual(elevate["max-age"], self.request._elevate_max_age)
+        self.assertTrue(elevate["httponly"])
 
         # Asserting that these are insecure together explicitly
         # since it's a big deal to not fuck up
         self.assertFalse(self.request.is_secure())
-        self.assertFalse(elevate['secure'])  # insecure request
+        self.assertFalse(elevate["secure"])  # insecure request
 
     def test_process_response_sets_secure_cookie(self):
         self.login()
@@ -59,7 +60,7 @@ class ElevateMiddlewareTestCase(BaseTestCase):
         self.assertEqual(morsels[0][0], COOKIE_NAME)
         _, elevate = morsels[0]
         self.assertTrue(self.request.is_secure())
-        self.assertTrue(elevate['secure'])
+        self.assertTrue(elevate["secure"])
 
     def test_process_response_elevate_revoked_removes_cookie(self):
         self.login()
@@ -77,7 +78,7 @@ class ElevateMiddlewareTestCase(BaseTestCase):
         # and telling it to expire
         self.assertEqual(elevate.key, COOKIE_NAME)
         self.assertFalse(elevate.value)
-        self.assertEqual(elevate['max-age'], 0)
+        self.assertEqual(elevate["max-age"], 0)
 
     def test_process_response_elevate_revoked_without_cookie(self):
         self.login()

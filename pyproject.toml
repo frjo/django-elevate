@@ -1,20 +1,81 @@
-[tool.poetry]
-name = "django-elevate"
-version = "2.0.3"
-description = "Extra security for your sensitive pages"
-authors = ["Justin Mayer <entroP@gmail.com>"]
-readme = "README.rst"
-license = "BSD"
-keywords = ["django", "security", "authentication", "permissions"]
-
-[tool.autopub]
-project-name = "Elevate"
-git-username = "botpub"
-git-email = "52496925+botpub@users.noreply.github.com"
-changelog-file = "docs/changelog/index.rst"
-version-strings = ["setup.py"]
-tag-prefix = "v"
-append-github-contributor = true
-
 [build-system]
-requires = ["setuptools >= 40.6.0", "wheel"]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "django-elevate"
+version = "2.0.4"
+description = "Extra security for your sensitive pages"
+authors = [{name = "Justin Mayer", email = "entroP@gmail.com"}]
+readme = "README.rst"
+license = {file = "LICENSE"}
+keywords = ["django", "security", "authentication", "permissions"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Framework :: Django",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: BSD License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python",
+    "Topic :: Software Development",
+]
+requires-python = ">=3.12"
+
+dependencies = []
+
+[dependency-groups]
+dev = [
+    "django>=5.2.4",
+    "hatch>=1.14.1",
+    "invoke>=2.2.0",
+    "pre-commit>=4.2.0",
+    "pytest>=8.4.1",
+    "pytest-cov>=6.2.1",
+    "pytest-django>=4.11.1",
+    "ruff>=0.12.2",
+    "tox>=4.27.0",
+]
+docs = [
+    "sphinx>=8.2.3",
+    "sphinx-rtd-theme>=3.0.2",
+]
+
+[tool.uv]
+default-groups = ["dev", "docs"]
+
+[project.urls]
+Homepage = "https://github.com/justinmayer/django-elevate"
+Documentation = "https://django-elevate.readthedocs.io/"
+Source = "https://github.com/justinmayer/django-elevate"
+Changelog = "https://django-elevate.readthedocs.io/en/latest/changelog/index.html"
+Tracker = "https://github.com/justinmayer/django-elevate/issues"
+
+[tool.pytest.ini_options]
+python_files = ['tests/*.py']
+
+[tool.ruff.lint]
+ignore = [
+    "E501", # line too long
+    "C901", # too complex
+    # 'F821',
+    # 'W605',
+]
+select = [
+    'C', # flake8-comprehensions
+    'B', # flake8-bugbear
+    'E', # pycodestyle errors
+    'F', # pyflakes
+    'I', # iSort
+    'W', # pycodestyle warnings
+]
+
+[tool.hatch.build.targets.sdist]
+
+[tool.hatch.build.targets.wheel]
+packages = ["elevate"]

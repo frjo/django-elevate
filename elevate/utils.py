@@ -6,10 +6,11 @@ elevate.utils
 :copyright: (c) 2014-2016 by Matt Robenolt.
 :license: BSD, see LICENSE for more details.
 """
-from django.core.signing import BadSignature
-from django.utils.crypto import get_random_string, constant_time_compare
 
-from elevate.settings import COOKIE_NAME, COOKIE_AGE, COOKIE_SALT, TOKEN_LENGTH
+from django.core.signing import BadSignature
+from django.utils.crypto import constant_time_compare, get_random_string
+
+from elevate.settings import COOKIE_AGE, COOKIE_NAME, COOKIE_SALT, TOKEN_LENGTH
 
 
 def grant_elevated_privileges(request, max_age=COOKIE_AGE):
@@ -17,14 +18,14 @@ def grant_elevated_privileges(request, max_age=COOKIE_AGE):
     Assigns a random token to the user's session
     that allows them to have elevated permissions
     """
-    user = getattr(request, 'user', None)
+    user = getattr(request, "user", None)
 
     # If there's not a user on the request, just noop
     if user is None:
         return
 
     if not user.is_authenticated:
-        raise ValueError('User needs to be logged in to be elevated')
+        raise ValueError("User needs to be logged in to be elevated")
 
     # Token doesn't need to be unique,
     # just needs to be unpredictable and match the cookie and the session
@@ -49,14 +50,13 @@ def has_elevated_privileges(request):
     """
     Check if a request is allowed to perform Elevate actions
     """
-    if getattr(request, '_elevate', None) is None:
+    if getattr(request, "_elevate", None) is None:
         try:
-            request._elevate = (
-                request.user.is_authenticated and
-                constant_time_compare(
-                    request.get_signed_cookie(COOKIE_NAME, salt=COOKIE_SALT, max_age=COOKIE_AGE),
-                    request.session[COOKIE_NAME]
-                )
+            request._elevate = request.user.is_authenticated and constant_time_compare(
+                request.get_signed_cookie(
+                    COOKIE_NAME, salt=COOKIE_SALT, max_age=COOKIE_AGE
+                ),
+                request.session[COOKIE_NAME],
             )
         except (KeyError, BadSignature):
             request._elevate = False

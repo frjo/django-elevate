@@ -2,6 +2,7 @@ from django.http import HttpResponse
 from django.views import generic
 
 from elevate.mixins import ElevateMixin
+
 from .base import BaseTestCase
 
 
@@ -23,4 +24,4 @@ class ElevateMixinTestCase(BaseTestCase):
         self.request.is_elevated = lambda: False
         response = foo(self.request)
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response['Location'], '/elevate/?next=/foo')
+        self.assertEqual(response["Location"], "/elevate/?next=/foo")

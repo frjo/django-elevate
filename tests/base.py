@@ -1,15 +1,16 @@
 import unittest
 
-from django.contrib.auth.models import User, AnonymousUser
+from django.contrib.auth.models import AnonymousUser, User
 from django.test import RequestFactory
 
 
 class StubPasswordBackend:
-    """ Stub backend
+    """Stub backend
 
     Always authenticates when the password matches self.password
 
     """
+
     password = "stub"
 
     def authenticate(self, request=None, username=None, password=None):
@@ -23,7 +24,7 @@ class FooPasswordBackend(StubPasswordBackend):
 
 class BaseTestCase(unittest.TestCase):
     def setUp(self):
-        self.request = self.get('/foo')
+        self.request = self.get("/foo")
         self.request.session = {}
         self.setUser(AnonymousUser())
 
