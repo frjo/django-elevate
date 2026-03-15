@@ -7,6 +7,7 @@ elevate.middleware
 :license: BSD, see LICENSE for more details.
 """
 
+from django.core.exceptions import ImproperlyConfigured
 from django.utils.deprecation import MiddlewareMixin
 
 from elevate.settings import (
@@ -31,12 +32,13 @@ class ElevateMiddleware(MiddlewareMixin):
         return has_elevated_privileges(request)
 
     def process_request(self, request):
-        assert hasattr(request, "session"), (
-            "The Elevate middleware requires session middleware to be installed."
-            "Edit your MIDDLEWARE setting to insert "
-            "'django.contrib.sessions.middleware.SessionMiddleware' before "
-            "'elevate.middleware.ElevateMiddleware'."
-        )
+        if not hasattr(request, "session"):
+            raise ImproperlyConfigured(
+                "The Elevate middleware requires session middleware to be installed. "
+                "Edit your MIDDLEWARE setting to insert "
+                "'django.contrib.sessions.middleware.SessionMiddleware' before "
+                "'elevate.middleware.ElevateMiddleware'."
+            )
         request.is_elevated = lambda: self.has_elevated_privileges(request)
 
     def process_response(self, request, response):
@@ -47,7 +49,7 @@ class ElevateMiddleware(MiddlewareMixin):
 
         # We have explicitly had Elevate revoked, so clean up cookie
         if is_elevated is False and COOKIE_NAME in request.COOKIES:
-            response.delete_cookie(COOKIE_NAME)
+            response.delete_cookie(COOKIE_NAME, path=COOKIE_PATH, domain=COOKIE_DOMAIN)
             return response
 
         # Elevate mode has been granted,

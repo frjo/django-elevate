@@ -62,7 +62,7 @@ class ElevateView(View):
     @method_decorator(never_cache)
     @method_decorator(csrf_protect)
     @method_decorator(login_required)
-    def dispatch(self, request):
+    def dispatch(self, request, *args, **kwargs):
         redirect_to = request.GET.get(REDIRECT_FIELD_NAME, REDIRECT_URL)
 
         # Make sure we're not redirecting to other sites
