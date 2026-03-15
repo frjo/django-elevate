@@ -15,6 +15,7 @@ from elevate.settings import (
     COOKIE_NAME,
     COOKIE_PATH,
     COOKIE_SALT,
+    COOKIE_SAMESITE,
     COOKIE_SECURE,
 )
 from elevate.utils import has_elevated_privileges
@@ -56,7 +57,12 @@ class ElevateMiddleware:
 
         # We have explicitly had Elevate revoked, so clean up cookie
         if is_elevated is False and COOKIE_NAME in request.COOKIES:
-            response.delete_cookie(COOKIE_NAME, path=COOKIE_PATH, domain=COOKIE_DOMAIN)
+            response.delete_cookie(
+                COOKIE_NAME,
+                path=COOKIE_PATH,
+                domain=COOKIE_DOMAIN,
+                samesite=COOKIE_SAMESITE,
+            )
             return response
 
         # Elevate mode has been granted,
@@ -73,6 +79,7 @@ class ElevateMiddleware:
                 httponly=COOKIE_HTTPONLY,  # Not accessible by JavaScript
                 path=COOKIE_PATH,
                 domain=COOKIE_DOMAIN,
+                samesite=COOKIE_SAMESITE,
             )
 
         return response

@@ -40,6 +40,11 @@ COOKIE_SECURE = getattr(settings, "ELEVATE_COOKIE_SECURE", None)
 # An extra salt to be added into the cookie signature
 COOKIE_SALT = getattr(settings, "ELEVATE_COOKIE_SALT", "")
 
+# SameSite attribute for the Elevate cookie.
+# 'Strict' prevents the cookie from being sent on any cross-site request,
+# including top-level navigations. Use 'Lax' if that causes login-flow issues.
+COOKIE_SAMESITE = getattr(settings, "ELEVATE_COOKIE_SAMESITE", "Strict")
+
 # The name of the session attribute used to preserve the redirect destination
 # between the original page request and successful Elevate login.
 REDIRECT_TO_FIELD_NAME = getattr(
