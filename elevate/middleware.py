@@ -33,7 +33,7 @@ class ElevateMiddleware(MiddlewareMixin):
     def process_request(self, request):
         assert hasattr(request, "session"), (
             "The Elevate middleware requires session middleware to be installed."
-            "Edit your MIDDLEWARE_CLASSES setting to insert "
+            "Edit your MIDDLEWARE setting to insert "
             "'django.contrib.sessions.middleware.SessionMiddleware' before "
             "'elevate.middleware.ElevateMiddleware'."
         )

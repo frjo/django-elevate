@@ -14,6 +14,7 @@ from django.http import HttpResponseRedirect, QueryDict
 from django.shortcuts import resolve_url
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
+from django.utils.http import url_has_allowed_host_and_scheme
 from django.utils.module_loading import import_string
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect
@@ -28,12 +29,6 @@ from elevate.settings import (
     URL,
 )
 from elevate.utils import grant_elevated_privileges
-
-try:
-    from django.utils.http import url_has_allowed_host_and_scheme
-except ImportError:
-    # Remove once Django 2.2 is EOL
-    from django.utils.http import is_safe_url as url_has_allowed_host_and_scheme
 
 
 class ElevateView(View):
