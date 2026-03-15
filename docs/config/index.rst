@@ -45,6 +45,12 @@ By default, all of the settings are optional and define sane and secure defaults
 ``ELEVATE_COOKIE_SALT``
     An extra salt to be added into the cookie signature. *Default: ''*
 
+``ELEVATE_COOKIE_SAMESITE``
+    The ``SameSite`` attribute for the Elevate cookie. ``'Strict'`` prevents the
+    cookie from being sent on any cross-site request, including top-level navigations.
+    Use ``'Lax'`` if that causes issues with login flows that redirect back to your
+    site from a third party. *Default: 'Strict'*
+
 ``ELEVATE_REDIRECT_TO_FIELD_NAME``
     The name of the session attribute used to preserve the redirect destination
     between the original page request and successful elevated login. *Default: elevate_redirect_to*

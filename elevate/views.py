@@ -97,7 +97,7 @@ def elevate(request, **kwargs):
 
 def redirect_to_elevate(next_url, elevate_url=None):
     """
-    Redirects the user to the login page, passing the given 'next' page
+    Redirects the user to the elevate page, passing the given 'next' page
     """
     if elevate_url is None:
         elevate_url = URL
