@@ -7,9 +7,9 @@ elevate
 :license: BSD, see LICENSE for more details.
 """
 
-from importlib.metadata import version
+from importlib.metadata import PackageNotFoundError, version
 
 try:
     VERSION = version("django-elevate")
-except Exception:  # pragma: no cover
+except PackageNotFoundError:  # pragma: no cover
     VERSION = "unknown"

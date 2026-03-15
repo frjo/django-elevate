@@ -28,7 +28,9 @@ class ElevateForm(forms.Form):
     def clean_password(self):
         username = self.user.get_username()
         if auth.authenticate(
-            request=self.request, username=username, password=self.data["password"]
+            request=self.request,
+            username=username,
+            password=self.cleaned_data["password"],
         ):
-            return self.data["password"]
+            return self.cleaned_data["password"]
         raise forms.ValidationError(_("Incorrect password"))

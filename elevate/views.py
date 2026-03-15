@@ -102,12 +102,10 @@ def redirect_to_elevate(next_url, elevate_url=None):
     if elevate_url is None:
         elevate_url = URL
 
-    try:
-        # django 1.10 and greater can't resolve the string 'elevate.views.elevate' to a URL
-        # https://docs.djangoproject.com/en/1.10/releases/1.10/#removed-features-1-10
+    # If ELEVATE_URL is a dotted Python path, resolve it to the callable
+    # so that resolve_url() can reverse it to a URL.
+    if isinstance(elevate_url, str) and "." in elevate_url:
         elevate_url = import_string(elevate_url)
-    except ImportError:
-        pass  # wasn't a dotted path
 
     elevate_url_parts = list(urlparse(resolve_url(elevate_url)))
 
