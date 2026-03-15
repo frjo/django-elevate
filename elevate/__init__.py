@@ -10,8 +10,6 @@ elevate
 from importlib.metadata import version
 
 try:
-    VERSION = version("elevate")
+    VERSION = version("django-elevate")
 except Exception:  # pragma: no cover
     VERSION = "unknown"
-
-default_app_config = "elevate.apps.ElevateConfig"

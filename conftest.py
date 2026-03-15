@@ -5,7 +5,7 @@ INSTALLED_APPS = [
     "elevate",
 ]
 
-MIDDLEWARE_CLASSES = [
+MIDDLEWARE = [
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
 ]
@@ -24,18 +24,14 @@ def pytest_configure(config):
             "tests.base.StubPasswordBackend",
         ],
         DEBUG=True,
-        DATABASE_ENGINE="sqlite3",
         DATABASES={
             "default": {
                 "NAME": ":memory:",
                 "ENGINE": "django.db.backends.sqlite3",
-                "TEST_NAME": ":memory:",
             },
         },
-        DATABASE_NAME=":memory:",
-        TEST_DATABASE_NAME=":memory:",
         INSTALLED_APPS=INSTALLED_APPS,
-        MIDDLEWARE_CLASSES=MIDDLEWARE_CLASSES,
+        MIDDLEWARE=MIDDLEWARE,
         PASSWORD_HASHERS=["django.contrib.auth.hashers.MD5PasswordHasher"],
         ROOT_URLCONF="tests.urls",
         SECRET_KEY="test",

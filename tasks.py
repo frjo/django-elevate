@@ -29,12 +29,15 @@ def clean(c):
 @task(clean)
 def release(c):
     "Cut a new release"
-    version = c.run("python setup.py --version").stdout.strip()
-    assert version, "No version found in setup.py?"
+    import tomllib
+
+    with open("pyproject.toml", "rb") as f:
+        version = tomllib.load(f)["project"]["version"]
+    assert version, "No version found in pyproject.toml?"
 
     print("### Releasing new version: {0}".format(version))
     c.run("git tag {0}".format(version))
     c.run("git push --tags")
 
-    c.run("python setup.py sdist bdist_wheel")
-    c.run("twine upload -s dist/*")
+    c.run("uv build")
+    c.run("uv publish")
