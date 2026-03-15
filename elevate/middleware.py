@@ -8,7 +8,6 @@ elevate.middleware
 """
 
 from django.core.exceptions import ImproperlyConfigured
-from django.utils.deprecation import MiddlewareMixin
 
 from elevate.settings import (
     COOKIE_DOMAIN,
@@ -21,11 +20,19 @@ from elevate.settings import (
 from elevate.utils import has_elevated_privileges
 
 
-class ElevateMiddleware(MiddlewareMixin):
+class ElevateMiddleware:
     """
     Middleware that contributes ``request.is_elevated()`` and sets the required
     cookie for Elevate mode to work correctly.
     """
+
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        self.process_request(request)
+        response = self.get_response(request)
+        return self.process_response(request, response)
 
     def has_elevated_privileges(self, request):
         # Override me to alter behavior
