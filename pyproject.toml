@@ -27,6 +27,12 @@ requires-python = ">=3.11"
 
 dependencies = []
 
+[project.optional-dependencies]
+docs = [
+    "sphinx>=8.2.3",
+    "sphinx-rtd-theme>=3.0.2",
+]
+
 [dependency-groups]
 dev = [
     "django>=5.2.4",
@@ -39,13 +45,9 @@ dev = [
     "ruff>=0.12.2",
     "tox>=4.27.0",
 ]
-docs = [
-    "sphinx>=8.2.3",
-    "sphinx-rtd-theme>=3.0.2",
-]
 
 [tool.uv]
-default-groups = ["dev", "docs"]
+default-groups = ["dev"]
 
 [project.urls]
 Homepage = "https://github.com/justinmayer/django-elevate"
